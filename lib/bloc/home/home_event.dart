@@ -7,4 +7,4 @@ abstract class HomeEvent extends Equatable {
 }
 
 
-class GetDataEvent extends HomeEvent {}
+class FetchDataHomeEvent extends HomeEvent {}

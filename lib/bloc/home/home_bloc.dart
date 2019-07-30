@@ -14,15 +14,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeState get initialState => InitialHomeState();
 
   @override
-  Stream<HomeState> mapEventToState(HomeEvent event) {
-    if (event is GetDataEvent) {
-      return _actionGetData();
+  Stream<HomeState> mapEventToState(HomeEvent event) async* {
+    if (event is FetchDataHomeEvent) {
+      final result = await _actionGetData();
+      yield SuccessHomeState(result);
+      return;
     }
-    return null;
   }
 
-  _actionGetData() async {
-    var result = await filmDataRepository.getFilmThumbList();
-    return SuccessHomeState(result);
-  }
+  _actionGetData() async => await filmDataRepository.getFilmThumbList();
+
+  fetchData() => dispatch(FetchDataHomeEvent());
 }
