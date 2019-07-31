@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'detail_page.dart';
+
 class HomePage extends StatelessWidget {
   final FilmDataRepository filmDataRepository = FilmDataRepository();
 
@@ -64,7 +66,12 @@ class __HomePageWidgeteState extends State<_HomePageWidgete> {
   }
 
   _actionClick(FilmModel data) {
-    final snackBar = SnackBar(content: Text('You click on ${data.name}'));
-    Scaffold.of(context).showSnackBar(snackBar);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DetailPage(film: data)),
+    );
+
+    // final snackBar = SnackBar(content: Text('You click on ${data.name}'));
+    // Scaffold.of(context).showSnackBar(snackBar);
   }
 }

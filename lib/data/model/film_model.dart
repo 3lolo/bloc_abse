@@ -9,7 +9,9 @@ class FilmModel {
   double get rating => _rating;
   final int _reviewsCount;
   int get reviewsCount => _reviewsCount;
+  final String _description;
+  String get description => _description;
 
-  FilmModel(
-      this._url, this._name, this._authour, this._rating, this._reviewsCount);
+  FilmModel(this._url, this._name, this._authour, this._rating,
+      this._reviewsCount, this._description);
 }
