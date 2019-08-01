@@ -11,7 +11,8 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _DetailPageWidgete(film: film);
+    return Material(
+        type: MaterialType.transparency, child: _DetailPageWidgete(film: film));
 
     // Scaffold(
     //     appBar: AppBar(title: Text('Home Page')),
@@ -38,58 +39,38 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          title: Text('SliverAppBar'),
-          backgroundColor: Colors.green,
-          expandedHeight: 400.0,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-            background: Image.network(filmModel.url, fit: BoxFit.cover),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              ConstrainedBox(  constraints: new BoxConstraints(minHeight: 100),child: Text("gg")), 
-              // Container(
-              //     alignment: Alignment.center,
-              //     color: Colors.red,
-              //     height: 400,
-              //     child: Text("gg wp")),
-
-              // Container(
-              //   child: Column(
-              //     children: <Widget>[
-              //       Row(children: <Widget>[
-              //         // Text("${filmModel.name}"),
-              //         Text("like")
-              //       ]),
-              //       Text(filmModel.athour),
-              //       Row(
-              //         children: <Widget>[Text("stars"), Text("see reviews")],
-              //       )
-              //     ],
-              //   ),
-              // ),
-              Container(color: Colors.orange, height: 200),
-              Container(color: Colors.yellow, height: 200),
-              Container(color: Colors.pink, height: 200),
-              // Container(
-              //   height: 200,
-              //   child: Column(
-              //     mainAxisSize: MainAxisSize.max,
-              //     children: <Widget>[
-              //       Text("About book"),
-              //       Text("${filmModel.description}")
-              //     ],
-              //   ),
-              // ),
+        color: Colors.white,
+        child: Stack(children: <Widget>[
+          CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                title: Text('${filmModel.name}'),
+                backgroundColor: Colors.blue,
+                expandedHeight: 400.0,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Image.network(filmModel.url, fit: BoxFit.cover),
+                ),
+              ),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 16.0, right: 16, top: 100),
+                  child: Text("About this book"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 20.0, left: 16, right: 16, bottom: 100),
+                  child: Text("${filmModel.description}"),
+                )
+              ])),
             ],
           ),
-        ),
-      ],
-    ));
+          Positioned(
+            top: 200,
+            child: Container(color: Colors.amber, height: 200, width: 300,),
+          )
+        ]));
   }
 }
