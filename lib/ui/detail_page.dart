@@ -68,8 +68,46 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
             ],
           ),
           Positioned(
-            top: 200,
-            child: Container(color: Colors.amber, height: 200, width: 300,),
+            top: 342,
+            left: 30,
+            right: 26,
+            child: Padding(
+              padding: const EdgeInsets.all(26),
+              child: Material(
+                elevation: 8,
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(40.0)),
+                child: Padding(
+                  padding: const EdgeInsets.all(26.0),
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('${filmModel.name}'),
+                            Text("heart")
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Row(
+                            children: <Widget>[Text('by ${filmModel.athour}')],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 21.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[Text("stars"), Text("Reviews")],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           )
         ]));
   }
