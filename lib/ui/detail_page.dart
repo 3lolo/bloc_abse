@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:bloc_bases/bloc/bloc.dart';
+import 'package:bloc_bases/bloc/details/details_bloc.dart';
+import 'package:bloc_bases/bloc/details/details_state.dart';
 import 'package:bloc_bases/data/model/film_model.dart';
+import 'package:bloc_bases/data/model/media.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,24 +36,46 @@ class _DetailPageWidgete extends StatefulWidget {
 }
 
 class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
+  DetailsBloc _bloc;
   final FilmModel filmModel;
 
   __DetailPageWidgeteState(this.filmModel);
 
   @override
+  void initState() {
+    super.initState();
+    _bloc = BlocProvider.of<DetailsBloc>(context);
+    _bloc.fetchData(filmModel.id);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    return BlocBuilder<DetailsBloc, DetailsState>(builder: (context, state) {
+      if (state is InitialDetailsState) {
+        return Center(child: CircularProgressIndicator());
+      } else if (state is EmptyHomeState) {
+        return Center(child: Text("No data"));
+      } else if (state is SuccessDetailsState) {
+        return getWidgete(state.result);
+      } else {
+        return Container();
+      }
+    });
+  }
+
+  getWidgete(MediaModel media) {
     return Container(
         color: Colors.white,
         child: Stack(children: <Widget>[
           CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                title: Text('${filmModel.name}'),
+                title: Text('${media.title}'),
                 backgroundColor: Colors.blue,
                 expandedHeight: 400.0,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                  background: Image.network(filmModel.url, fit: BoxFit.cover),
+                  background: Image.network(media.imageUrl, fit: BoxFit.cover),
                 ),
               ),
               SliverList(
@@ -62,7 +88,7 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 20.0, left: 16, right: 16, bottom: 100),
-                  child: Text("${filmModel.description}"),
+                  child: Text("${media.title}"),
                 )
               ])),
             ],
@@ -85,14 +111,14 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text('${filmModel.name}'),
+                            Text('${media.title}'),
                             Text("heart")
                           ],
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Row(
-                            children: <Widget>[Text('by ${filmModel.athour}')],
+                            children: <Widget>[Text('by ${media.titleEn}')],
                           ),
                         ),
                         Padding(

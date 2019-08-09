@@ -22,7 +22,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  _actionGetData() async => await filmDataRepository.getFilmThumbList();
+  _actionGetData() async => await filmDataRepository.getAnimeList();
 
   fetchData() => dispatch(FetchDataHomeEvent());
 }
