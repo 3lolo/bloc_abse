@@ -21,5 +21,5 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   }
 
   fetchData(int id) => dispatch(FetchMediaDatailsEvent(id));
-  _actionGetData(int id) => filmDataRepository.getAnimeDetails(id);
+  _actionGetData(int id) => filmDataRepository.getMediaDetails(id);
 }

@@ -66,7 +66,7 @@ class FilmDataRepository {
     }
   }
 
-  Future<MediaModel> getAnimeDetails(int id) async {
+  Future<MediaModel> getMediaDetails(int id) async {
     id = 1;
     var response = await http.get('https://api.jikan.moe/v3/anime/$id');
     if (response.statusCode == 200) {
