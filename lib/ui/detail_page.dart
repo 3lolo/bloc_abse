@@ -1,35 +1,32 @@
-import 'dart:io';
-
 import 'package:bloc_bases/bloc/bloc.dart';
 import 'package:bloc_bases/bloc/details/details_bloc.dart';
 import 'package:bloc_bases/bloc/details/details_state.dart';
-import 'package:bloc_bases/data/model/film_model.dart';
+import 'package:bloc_bases/data/fillm_data_repostory.dart';
 import 'package:bloc_bases/data/model/media.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailPage extends StatelessWidget {
-  final FilmModel film;
-  const DetailPage({Key key, @required this.film}) : super(key: key);
+  final MediaThumbModel film;
+  final FilmDataRepository filmDataRepository = FilmDataRepository();
+
+  DetailPage({Key key, @required this.film}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(film.id);
+    var film2 = MediaModel(film.id, "", "", "", "", "", "", 0, 0);
     return Material(
-        type: MaterialType.transparency, child: _DetailPageWidgete(film: film));
-
-    // Scaffold(
-    //     appBar: AppBar(title: Text('Home Page')),
-    //     body: _DetailPageWidgete(film: film));
-    // //   BlocProvider(
-    //       builder: (context) => HomeBloc(filmDataRepository),
-    //       child: _DetailPageWidgete()),
-    // );
+        type: MaterialType.transparency,
+        child: BlocProvider(
+            builder: (context) => DetailsBloc(filmDataRepository),
+            child: _DetailPageWidgete(film: film2)));
   }
 }
 
 class _DetailPageWidgete extends StatefulWidget {
-  final FilmModel film;
+  final MediaModel film;
   _DetailPageWidgete({Key key, @required this.film}) : super(key: key);
 
   __DetailPageWidgeteState createState() => __DetailPageWidgeteState(film);
@@ -37,7 +34,7 @@ class _DetailPageWidgete extends StatefulWidget {
 
 class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
   DetailsBloc _bloc;
-  final FilmModel filmModel;
+  final MediaModel filmModel;
 
   __DetailPageWidgeteState(this.filmModel);
 
@@ -118,7 +115,7 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Row(
-                            children: <Widget>[Text('by ${media.titleEn}')],
+                            children: <Widget>[Text('by ${media.title}')],
                           ),
                         ),
                         Padding(

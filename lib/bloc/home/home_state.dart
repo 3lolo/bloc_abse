@@ -1,4 +1,4 @@
-import 'package:bloc_bases/data/model/film_model.dart';
+import 'package:bloc_bases/data/model/media.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -12,7 +12,7 @@ class InitialHomeState extends HomeState {}
 class EmptyHomeState extends HomeState {}
 
 class SuccessHomeState extends HomeState {
-  final List<FilmModel> result;
+  final List<MediaThumbModel> result;
   SuccessHomeState(this.result);
 }
 

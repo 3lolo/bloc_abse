@@ -1,72 +1,94 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
+
 import 'model/Response.dart';
-import 'model/film_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'model/media.dart';
 
 class FilmDataRepository {
-  Future<List<FilmModel>> getFilmThumbList() async {
-    await Future.delayed(Duration(seconds: 2));
-    return FilmDemo.getFilmList();
-  }
+  // Future<List<MediaThumbModel>> getFilmThumbList() async {
+  //   await Future.delayed(Duration(seconds: 2));
+  //   return FilmDemo.getFilmList();
+  // }
 
-  Future<List<FilmModel>> getAnimeList() async {
-    final response =
-        await http.get('https://api.jikan.moe/v3/top/anime/1/upcoming');
+  Future<List<MediaThumbModel>> getAnimeList() async {
+    var query = """{
+  Page(perPage: 10) {
+    mediaList(type: ANIME) {
+      mediaId
+      media {
+        id
+        title {
+          english
+          userPreferred
+        }
+        coverImage {
+          medium
+          extraLarge
+        }
+        favourites
+        averageScore
+      }
+    }
+  }
+}
+""";
+
+    Map<String, String> requestMap = {"query": query};
+    String requestBody = json.encode(requestMap);
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    var client = MyClient(http.Client());
+    client.head("https://graphql.anilist.co", headers: headers);
+    print("requestBody:$requestBody");
+    var response = await client.post("https://graphql.anilist.co",
+        body: requestBody, headers: headers);
 
     if (response.statusCode == 200) {
-      var result = ApiResponse<List<FilmModel>>.fromJson(
+    
+      var result = ApiResponse.fromJson(
           json.decode(response.body),
-          (data) => (data as List).map((i) => FilmModel.fromJson(i)).toList());
-      return result.data;
+          "data",
+          (data) => ApiResponse.fromJson(data,
+              "Page",
+              (page) => (page["mediaList"] as List)
+                  .map((it) => MediaThumbModel.fromJson(it))
+                  .toList()));
+      //  MediaThumbModel.fromJson(json.decode(response.body));
+      return result.data.data;
     } else {
       throw Exception('Failed to load data');
     }
   }
 
   Future<MediaModel> getAnimeDetails(int id) async {
-    final response = await http.get('https://api.jikan.moe/v3/anime/$id');
-
+    id = 1;
+    var response = await http.get('https://api.jikan.moe/v3/anime/$id');
     if (response.statusCode == 200) {
-      var result = MediaModel.fromJson(json.decode(response.body));
-      return result;
+      MediaModel.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed to load data');
+      print("something went wrong - ${response.body}");
     }
   }
 }
 
-class FilmDemo {
-  static getFilmList() {
-    String description =
-        """In the medieval kingdom of Goredd, women are expected to be ladies, men are their protectors, and dragons get to be whomever they want. 
-    Tess, stubbornly, is a troublemaker. You can’t make a scene at your sister’s wedding and break a relative’s nose with one punch (no matter how pompous he is)
-     and not suffer the consequences. As her family plans to send her to a nunnery, Tess yanks on her boots and sets out on a journey across the Southlands, alone and pretending to be a boy.""";
 
-    List<FilmModel> result = new List();
-    result.add(FilmModel(0, 
-        'https://planetside.co.uk/wp-content/uploads/2016/10/tron_legacy_final_poster_hi-res_01.jpg',
-        'Tron',
-        "Auth Auth",
-        3.4,
-        12344,
-        description));
-    result.add(FilmModel(0,
-        'https://m.media-amazon.com/images/M/MV5BMjA5NzA5NjMwNl5BMl5BanBnXkFtZTgwNjg2OTk2NzM@._V1_.jpg',
-        'GOT',
-        "Auth Auth",
-        3.4,
-        12344,
-        description));
-    result.add(FilmModel(0,
-        'https://musicart.xboxlive.com/7/2bb22f00-0000-0000-0000-000000000002/504/image.jpg?w=1920&h=1080',
-        'Throne of Atlantis',
-        "Auth Auth",
-        3.4,
-        12344,
-        description));
-    return result;
+class MyClient extends BaseClient {
+  MyClient(this.delegate);
+  final Client delegate;
+  Future<StreamedResponse> send(BaseRequest request) {
+    _logRequest(request);
+    return delegate.send(request);
   }
+
+  void close() => delegate.close();
+  void _logRequest(BaseRequest request) => print("""$request
+  ${request.headers}, 
+  Content-Lenght:${request.contentLength}
+  ${request.toString()}""");
 }

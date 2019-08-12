@@ -1,10 +1,10 @@
-import 'package:bloc_bases/data/model/film_model.dart';
+import 'package:bloc_bases/data/model/media.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ItemBookThumb extends StatelessWidget {
-  final FilmModel data;
-  final Function(FilmModel) onClick;
+  final MediaThumbModel data;
+  final Function(MediaThumbModel) onClick;
   ItemBookThumb({Key key, @required this.data, this.onClick}) : super(key: key);
 
   @override
@@ -17,7 +17,7 @@ class ItemBookThumb extends StatelessWidget {
             new ClipRRect(
               borderRadius: new BorderRadius.circular(4.0),
               child: Image.network(
-                data.url,
+                data.image,
                 fit: BoxFit.fill,
                 height: 258.0,
                 width: 170.0,
@@ -38,18 +38,18 @@ class ItemBookThumb extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 35, bottom: 25),
                       child: Column(
                         children: <Widget>[
-                          Text(data.name),
+                          Text(data.title),
                           Padding(
                             padding: const EdgeInsets.only(top: 28.0),
-                            child: Text(data.athour),
+                            child: Text(data.title),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 14.0),
-                            child: Text("${data.rating}"),
+                            child: Text("${data.averageScore}"),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 14.0),
-                            child: Text("${data.reviewsCount} Reviews"),
+                            child: Text("${data.favourites} Reviews"),
                           )
                         ],
                       ),

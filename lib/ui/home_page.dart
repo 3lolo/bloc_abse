@@ -2,7 +2,7 @@ import 'package:bloc_bases/bloc/bloc.dart';
 import 'package:bloc_bases/bloc/home/home_bloc.dart';
 import 'package:bloc_bases/bloc/home/home_state.dart';
 import 'package:bloc_bases/data/fillm_data_repostory.dart';
-import 'package:bloc_bases/data/model/film_model.dart';
+import 'package:bloc_bases/data/model/media.dart';
 import 'package:bloc_bases/widget/item_book_thumb.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +65,7 @@ class __HomePageWidgeteState extends State<_HomePageWidgete> {
     });
   }
 
-  _actionClick(FilmModel data) {
+  _actionClick(MediaThumbModel data) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DetailPage(film: data)),
