@@ -16,17 +16,16 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(film.id);
-    var film2 = MediaModel(film.id, "", "", "", "", "", "", 0, 0);
     return Material(
         type: MaterialType.transparency,
         child: BlocProvider(
             builder: (context) => DetailsBloc(filmDataRepository),
-            child: _DetailPageWidgete(film: film2)));
+            child: _DetailPageWidgete(film: film)));
   }
 }
 
 class _DetailPageWidgete extends StatefulWidget {
-  final MediaModel film;
+  final MediaThumbModel film;
   _DetailPageWidgete({Key key, @required this.film}) : super(key: key);
 
   __DetailPageWidgeteState createState() => __DetailPageWidgeteState(film);
@@ -34,22 +33,22 @@ class _DetailPageWidgete extends StatefulWidget {
 
 class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
   DetailsBloc _bloc;
-  final MediaModel filmModel;
+  final MediaThumbModel film;
 
-  __DetailPageWidgeteState(this.filmModel);
+  __DetailPageWidgeteState(this.film);
 
   @override
   void initState() {
     super.initState();
     _bloc = BlocProvider.of<DetailsBloc>(context);
-    _bloc.fetchData(filmModel.id);
+    _bloc.fetchData(film.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DetailsBloc, DetailsState>(builder: (context, state) {
       if (state is InitialDetailsState) {
-        return Center(child: CircularProgressIndicator());
+        return getInitWidgete(film);
       } else if (state is EmptyHomeState) {
         return Center(child: Text("No data"));
       } else if (state is SuccessDetailsState) {
@@ -72,7 +71,8 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                 expandedHeight: 400.0,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                  background: Image.network(media.imageUrl, fit: BoxFit.cover),
+                  background:
+                      Image.network(media.imageLargeUrl, fit: BoxFit.cover),
                 ),
               ),
               SliverList(
@@ -132,6 +132,30 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
               ),
             ),
           )
+        ]));
+  }
+
+  getInitWidgete(MediaThumbModel media) {
+    return Container(
+        color: Colors.white,
+        child: Stack(children: <Widget>[
+          CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                title: Text('${media.title}'),
+                backgroundColor: Colors.blue,
+                expandedHeight: 400.0,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background:
+                      Image.network(media.imageLargeUrl, fit: BoxFit.cover),
+                ),
+              ),
+              SliverList(
+                  delegate: SliverChildListDelegate(
+                      [Center(child: CircularProgressIndicator())])),
+            ],
+          ),
         ]));
   }
 }

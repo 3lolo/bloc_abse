@@ -64,7 +64,7 @@ class _ForgetPasswordWidgete extends StatelessWidget {
     );
   }
 
-  _onResetPasswordPressed(BuildContext context) {
-    Navigator.pop(context);
-  }
+  // _onResetPasswordPressed(BuildContext context) {
+  //   Navigator.pop(context);
+  // }
 }

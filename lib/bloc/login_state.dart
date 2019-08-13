@@ -1,4 +1,3 @@
-import 'package:bloc_bases/bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
