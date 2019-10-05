@@ -3,6 +3,8 @@ import 'package:bloc_bases/bloc/home/home_bloc.dart';
 import 'package:bloc_bases/bloc/home/home_state.dart';
 import 'package:bloc_bases/data/fillm_data_repostory.dart';
 import 'package:bloc_bases/data/model/media.dart';
+import 'package:bloc_bases/ui/list_page.dart';
+import 'package:bloc_bases/widget/item_book_more.dart';
 import 'package:bloc_bases/widget/item_book_thumb.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +20,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
       body: BlocProvider(
           builder: (context) => HomeBloc(filmDataRepository),
           child: _HomePageWidgete()),
@@ -50,14 +49,10 @@ class __HomePageWidgeteState extends State<_HomePageWidgete> {
       } else if (state is EmptyHomeState) {
         return Center(child: Text("No data"));
       } else if (state is SuccessHomeState) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 24.0, right: 12.0),
-          child: ListView.separated(
-              itemBuilder: (BuildContext context, int index) => ItemBookThumb(
-                  data: state.result[index],
-                  onClick: (data) => _actionClick(data)),
-              itemCount: state.result.length,
-              separatorBuilder: (BuildContext context, int index) => Divider()),
+        return ListView.builder(
+          itemBuilder: (BuildContext context, int index) =>
+              _builderWithTitle(index, state),
+          itemCount: state.result.length * 2,
         );
       } else {
         return Container();
@@ -65,13 +60,58 @@ class __HomePageWidgeteState extends State<_HomePageWidgete> {
     });
   }
 
+  Widget _builderWithTitle(int index, SuccessHomeState state) {
+    int position = index ~/ 2;
+    MapEntry<String, List<MediaThumbModel>> entry =
+        state.result.entries.elementAt(position);
+    if (index % 2 == 0) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 8.0, left: 4.0, bottom: 4),
+        child: Text(
+          entry.key,
+          style: Theme.of(context).textTheme.headline,
+        ),
+      );
+    } else {
+      return Container(
+        height: 254,
+        child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int index) => _builder(
+                context, index, entry.value,  position),
+            itemCount: entry.value.length + 1),
+        padding: EdgeInsets.only(bottom: 8, top: 5),
+      );
+    }
+  }
+
+  Widget _builder(BuildContext context, int index, List<MediaThumbModel> data,int position) {
+
+    if (data.length > index) {
+      return Padding(
+        padding: EdgeInsets.only(left: (index == 0) ? 8.0 : 0, right: 8.0),
+        child: ItemBookThumb(
+            data: data[index], onClick: (data) => _actionClick(data)),
+      );
+    } else {
+    var type  = DataListType.values[position];
+    print("index $type position $position");
+      return ItemBookThumbMore(onClick: (data) => _actionClick2(data, type));
+    }
+  }
+
   _actionClick(MediaThumbModel data) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DetailPage(film: data)),
     );
+  }
 
-    // final snackBar = SnackBar(content: Text('You click on ${data.name}'));
-    // Scaffold.of(context).showSnackBar(snackBar);
+  _actionClick2(String data, DataListType type) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ListPage(type)),
+    );
   }
 }

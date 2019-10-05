@@ -28,6 +28,10 @@ dependencies:
   # uses-material-design: true
   http: ^0.12.0+2
   graphql_flutter: ^2.0.1
+  json_serializable: ^3.2.2
+  
+  flutter_html: ^0.11.0
+  youtube_player_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

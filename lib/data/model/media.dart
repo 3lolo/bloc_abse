@@ -29,11 +29,23 @@ class MediaModel {
   final int _popularity;
   int get popularity => _popularity;
 
-  final String _favourites;
-  String get favourites => _favourites;
+  final int _favourites;
+  int get favourites => _favourites;
 
   final int _averageScore;
   int get averageScore => _averageScore;
+
+  final String _format;
+  String get format => _format;
+
+  final String _startDate;
+  String get startDate => _startDate;
+
+  final String _endDate;
+  String get endDate => _endDate;
+
+  bool isLikedByMe = false;
+  bool isSaved = false;
 
   MediaModel(
       this._id,
@@ -47,32 +59,47 @@ class MediaModel {
       this._studios,
       this._popularity,
       this._favourites,
-      this._averageScore);
+      this._averageScore,
+      this._format,
+      this._startDate,
+      this._endDate);
 
   factory MediaModel.fromJson(Map<String, dynamic> media) {
     Map<String, dynamic> images = media["coverImage"];
-    // Map<String, dynamic> startDate = media["startDate"];
-    // Map<String, dynamic> endDate = media["endDate"];
+    Map<String, dynamic> startDateMap = media["startDate"];
+    Map<String, dynamic> endDateMap = media["endDate"];
+
+    String startDate =
+        "${startDateMap["day"] ?? "_"}.${startDateMap["month"] ?? "_"}.${startDateMap["year"] ?? "_"}";
+    String endDate =
+        "${endDateMap["day"] ?? "_"}.${endDateMap["month"] ?? "_"}.${endDateMap["year"] ?? "_"}";
+    endDate = endDate.replaceAll(".", "").replaceAll("_", "").trim().length == 0
+        ? "Not finished"
+        : endDate;
     Map<String, dynamic> titles = media["title"];
-    List<String> studios = (media["studios"]["nodes"]).map((it)=>it["name"]).toList();
-    // List<String> studios = List();
-    studiosMap.forEach((k, v) => studios.add(v));
-    List<String> genres =
-        (media["genres"] as List).map((it) => it.toString()).toList();
+    // List<String> studios = (media["studios"]["nodes"])
+    //     .map((it) => it["name"])
+    //     .toList()
+    //     .cast<String>();
+    List<String> genres = (media["genres"] as List).cast<String>();
+    List<String> studios;
 
     return MediaModel(
         media['id'],
         media['type'],
         images['medium'],
         images['extraLarge'],
-        titles["english"] ?? media["userPreffered"],
+        titles["english"] ?? titles["userPreferred"],
         media["description"],
         media["season"],
         genres,
         studios,
         media["popularity"],
-        media["favorites"],
-        media["averageScore"]);
+        media["favourites"],
+        media["averageScore"],
+        media["format"],
+        startDate,
+        endDate);
   }
 }
 
@@ -98,22 +125,52 @@ class MediaThumbModel {
   final int _averageScore;
   int get averageScore => _averageScore;
 
-  MediaThumbModel(this._id, this._type, this._image, this._imageLargeUrl,
-      this._title, this._favourites, this._averageScore);
+  final String _studio;
+  String get studio => _studio;
 
-  factory MediaThumbModel.fromJson(Map<String, dynamic> json) {
-    Map<String, dynamic> media = json["media"];
+  final String _genres;
+  String get genres => _genres;
+
+  final String _description;
+  String get description => _description;
+
+  MediaThumbModel(
+      this._id,
+      this._type,
+      this._image,
+      this._imageLargeUrl,
+      this._title,
+      this._favourites,
+      this._averageScore,
+      this._studio,
+      this._genres,
+      this._description);
+
+  factory MediaThumbModel.fromJson(Map<String, dynamic> media) {
+    // Map<String, dynamic> media = json["media"];
 
     Map<String, dynamic> title = media["title"];
     Map<String, dynamic> images = media["coverImage"];
+    List studios = (media["studios"]["edges"] as List);
+
+    String studio = studios.isEmpty
+        ? ""
+        : studios.firstWhere((v) => (v["isMain"] == true))["node"]["name"]
+            as String;
+
+    String genres = (media["genres"] as List).join(", ");
 
     return MediaThumbModel(
         media['id'],
         "ANIME",
         images["medium"],
-        images["extraLarge"],
+        images["large"],
         title["english"] ?? title["userPreferred"],
-        json["favourites"],
-        json["averageScore"]);
+        // "" + media["popularity"],
+        "",
+        media["averageScore"],
+        studio,
+        genres,
+        media["description"]);
   }
 }

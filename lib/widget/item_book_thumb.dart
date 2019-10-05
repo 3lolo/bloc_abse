@@ -1,4 +1,5 @@
 import 'package:bloc_bases/data/model/media.dart';
+import 'package:bloc_bases/ui/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,54 +10,72 @@ class ItemBookThumb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () => onClick(data),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            new ClipRRect(
-              borderRadius: new BorderRadius.circular(4.0),
-              child: Image.network(
-                data.image,
-                fit: BoxFit.fill,
-                height: 258.0,
-                width: 170.0,
-              ),
+    return Theme(
+      data: appTheme,
+      child: GestureDetector(
+          onTap: () => onClick(data),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5), topRight: Radius.circular(5)),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 2.0,
+                  color: Colors.black12.withOpacity(0.1),
+                )
+              ],
             ),
-            Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: Material(
-                    elevation: 5.0,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(27.0),
-                            bottomRight: Radius.circular(27.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 35, bottom: 25),
-                      child: Column(
-                        children: <Widget>[
-                          Text(data.title),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 28.0),
-                            child: Text(data.title),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 14.0),
-                            child: Text("${data.averageScore}"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 14.0),
-                            child: Text("${data.favourites} Reviews"),
-                          )
-                        ],
-                      ),
-                    ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(4.0),
+                      topRight: Radius.circular(4.0)),
+                  child: Image.network(
+                    data.imageLargeUrl,
+                    fit: BoxFit.fill,
+                    height: 180.0,
+                    width: 130.0,
                   ),
-                )),
-          ],
-        ));
+                ),
+                Container(
+                    color: Colors.black.withOpacity(0.05),
+                    width: 130.0,
+                    padding: const EdgeInsets.only(
+                        top: 4, bottom: 8, left: 4, right: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Text(
+                          data.title,
+                          style: Theme.of(context).textTheme.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                        ),
+                        Text(
+                          data.studio,
+                          style: Theme.of(context).textTheme.subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            data.genres,
+                            style: Theme.of(context).textTheme.body1,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      ],
+                    )),
+              ],
+            ),
+          )),
+    );
   }
 }

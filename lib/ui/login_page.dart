@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'forget_password_page.dart';
-import 'home_page.dart';
+import 'nav_page.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -56,8 +56,8 @@ class _LoginFormState extends State<LoginView> {
   }
 
   _actionNavToHomeScreen(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => NavPage()));
   }
 }
 

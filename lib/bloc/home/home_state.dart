@@ -12,7 +12,7 @@ class InitialHomeState extends HomeState {}
 class EmptyHomeState extends HomeState {}
 
 class SuccessHomeState extends HomeState {
-  final List<MediaThumbModel> result;
+  final Map<String, List<MediaThumbModel>> result;
   SuccessHomeState(this.result);
 }
 
