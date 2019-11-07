@@ -12,12 +12,10 @@ enum DataListType {
 
 String getQuery(DataListType dataListType, {int page = 1, int perPage = 6}) {
   var nextSeason = "WINTER";
-  var nextYear = 2020;
   var thisSeason = "FALL";
   var thisYear = 2019;
 
   var query;
-  var type;
 
   switch (dataListType) {
     case DataListType.Popular_This_Season:
@@ -26,7 +24,7 @@ String getQuery(DataListType dataListType, {int page = 1, int perPage = 6}) {
       break;
     case DataListType.Highly_Anticipated_Next_Season:
       query =
-          "media(season: $nextSeason, seasonYear: $nextYear, sort: POPULARITY_DESC, type: ANIME, isAdult: false) {$mediaQuery}";
+          "media(season: $nextSeason, seasonYear: $thisYear, sort: POPULARITY_DESC, type: ANIME, isAdult: false) {$mediaQuery}";
       break;
     case DataListType.Highest_Rated_All_Time:
       query =
@@ -133,6 +131,11 @@ class FilmDataRepository {
 
 mediaWithIdQuery(int id) => """{Media(id: $id){$mediaQuery}}""";
 
+var mediaFragment = """
+fragment media on Media {
+  $mediaQuery
+}""";
+
 final mediaQuery = """
   id
   title {
@@ -179,8 +182,3 @@ final mediaQuery = """
     }
   }
 """;
-
-var mediaFragment = """
-fragment media on Media {
-  $mediaQuery
-}""";

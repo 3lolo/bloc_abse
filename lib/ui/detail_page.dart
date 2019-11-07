@@ -1,6 +1,7 @@
 import 'package:bloc_bases/bloc/bloc.dart';
 import 'package:bloc_bases/bloc/details/details_bloc.dart';
 import 'package:bloc_bases/bloc/details/details_state.dart';
+import 'package:bloc_bases/data/db_storage.dart';
 import 'package:bloc_bases/data/fillm_data_repostory.dart';
 import 'package:bloc_bases/data/model/media.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class DetailPage extends StatelessWidget {
   final MediaThumbModel film;
   final FilmDataRepository filmDataRepository = FilmDataRepository();
+  final DbStorage dbStorage = DbStorage();
 
   DetailPage({Key key, @required this.film}) : super(key: key);
 
@@ -21,7 +23,7 @@ class DetailPage extends StatelessWidget {
     return Material(
         type: MaterialType.transparency,
         child: BlocProvider(
-            builder: (context) => DetailsBloc(filmDataRepository),
+            builder: (context) => DetailsBloc(filmDataRepository, dbStorage),
             child: _DetailPageWidgete(film: film)));
   }
 }
@@ -54,14 +56,19 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
       } else if (state is EmptyHomeState) {
         return Center(child: Text("No data"));
       } else if (state is SuccessDetailsState) {
-        return getWidgete(state.result);
+        return getWidgete(_bloc, state.result);
       } else {
         return Container();
       }
     });
   }
 
-  getWidgete(MediaModel media) {
+  _updateMediaStatus(MediaModel media, bool isLiked, bool isFlaged) {
+    _bloc.updateFavorites(media, isLiked, isFlaged);
+    setState(() => media.isLikedByMe = isLiked);
+  }
+
+  getWidgete(DetailsBloc bloc, MediaModel media) {
     return Container(
         color: Colors.white,
         child: Stack(children: <Widget>[
@@ -94,8 +101,8 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                         child: GestureDetector(
-                            onTap: () =>
-                                setState(() => media.isSaved = !media.isSaved),
+                            onTap: () => _updateMediaStatus(
+                                media, media.isLikedByMe, !media.isSaved),
                             child: Icon(
                               media.isSaved
                                   ? Icons.bookmark
@@ -104,8 +111,8 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                             )),
                       ),
                       GestureDetector(
-                          onTap: () => setState(
-                              () => media.isLikedByMe = !media.isLikedByMe),
+                          onTap: () => _updateMediaStatus(
+                              media, !media.isLikedByMe, media.isSaved),
                           child: Icon(
                             media.isLikedByMe
                                 ? Icons.favorite
@@ -132,7 +139,7 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                             padding:
                                 const EdgeInsets.only(left: 2.0, right: 16.0),
                             child: Text(
-                              "${media.startDate} ${media.format =="TV"?"- ${media.endDate}":""}",
+                              "${media.startDate} ${media.format == "TV" ? "- ${media.endDate}" : ""}",
                               style: Theme.of(context).textTheme.body1,
                             ),
                           ),
@@ -156,8 +163,7 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                           size: 14.0,
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(left: 2.0, right: 8.0),
+                          padding: const EdgeInsets.only(left: 2.0, right: 8.0),
                           child: Text(
                             "${media.popularity}",
                             style: Theme.of(context).textTheme.body1,
@@ -202,7 +208,7 @@ class __DetailPageWidgeteState extends State<_DetailPageWidgete> {
                     context: context,
                     videoId: YoutubePlayer.convertUrlToId(
                         "https://www.youtube.com/watch?v=izWEmnpmTKM"),
-                    flags: YoutubePlayerFlags(isLive: false, autoPlay: true),
+                    flags: YoutubePlayerFlags(isLive: false, autoPlay: false),
                     // flags: YoutubePLayerFlags(
                     //   isLive: true,
                     // ),

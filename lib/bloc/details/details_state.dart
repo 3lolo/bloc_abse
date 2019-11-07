@@ -16,4 +16,8 @@ class SuccessDetailsState extends DetailsState {
   SuccessDetailsState(this.result);
 }
 
+class UpdateDetailsState extends DetailsState {
+  UpdateDetailsState();
+}
+
 class ErrorDetailsState extends DetailsState {}
